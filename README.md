@@ -42,8 +42,8 @@ $ python cartodb_backup.py --postgis_backup
 ```
 
 ## Requirements
-- GDAL library
--
+- GDAL (>= 1.8.0).
+- PostgreSQL with PostGIS (only if you want use --postgis_backup).
 
 ## About author
 Developed by Cayetano Benavent.
