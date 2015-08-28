@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 #  Author: Cayetano Benavent, 2015.
-#  https://github.com/GeographicaGS
+#  https://github.com/GeographicaGS/CartoDB_Backup
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by

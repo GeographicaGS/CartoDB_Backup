@@ -1,6 +1,6 @@
 # CartoDB Backup
-Backup CartoDB entire domain to SQL dump file. Optionally you can restore SQL
-dumped file to a new (created) PostGIS DB.
+Python CLI to make a backup of an entire CartoDB domain to SQL dump file. 
+Optionally you can restore SQL dumped file to a new (created) PostGIS DB.
 
 Before execute this script you need a cartodbbkconfig file properly
 formed (See cartodbbkconfig_example) in your current/working directory.
@@ -38,3 +38,20 @@ Example with PostGIS backup:
 $ python cartodb_backup.py --postgis_backup
 
 ```
+
+## Requirements
+- GDAL library
+-
+
+## About author
+Developed by Cayetano Benavent.
+GIS Analyst at Geographica.
+
+http://www.geographica.gs
+
+
+## License
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
