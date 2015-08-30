@@ -2,10 +2,10 @@
 Python CLI to make a backup of an entire CartoDB domain to SQL dump file.
 Optionally you can restore SQL dumped file to a new (created) PostGIS DB.
 
-Before execute this script you need a cartodbbkconfig file properly
-formed (See cartodbbkconfig_example) in your current/working directory.
+Before execute this script you need a cartodbbkconfig.py file properly
+formed (See cartodbbkconfig_example.py) in your current/working directory.
 
-This script is
+cartodbbkconfig.py config parameters:
 
 ```python
 confparams = {
