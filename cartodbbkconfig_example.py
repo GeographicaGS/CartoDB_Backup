@@ -23,8 +23,10 @@
 confparams = {
                 "cdb_apikey": "here your api key",
                 "cdb_domain": "here your domain"
-                "sql_filedump": "here your dump filepath",
+                "sql_folderpath": "here your dump folderpath",
                 "pg_user": "here your db admin user",
+                "pg_pswd": None, # If you leave the password to None, the program will ask you in the command line interface
+                "pg_dbase": "here your db name",
                 "pg_host": "here your db host",
                 "pg_port": "here your db port",
                 "pg_newdatabase": "here your new db name"
