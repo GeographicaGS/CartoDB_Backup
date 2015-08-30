@@ -26,9 +26,12 @@
 
 
 import argparse
+import os
+import zipfile
 import subprocess
 import getpass
 import psycopg2
+from datetime import datetime
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 
@@ -116,6 +119,34 @@ def getPsw(my_user):
     return getpass.getpass(msg)
 
 
+def zipSql(sqlfolder, flname):
+    """
+    Zip sql dump file
+    """
+    try:
+        zipflname = os.path.join(sqlfolder, "{0}.zip".format(os.path.splitext(flname)[0]))
+
+        with zipfile.ZipFile(zipflname,'w',zipfile.ZIP_DEFLATED) as zfl:
+            zfl.write(os.path.join(sqlfolder, flname), flname)
+
+        print("sql file compressed: {}".format(zipflname))
+
+    except Exception as err:
+        print(err)
+
+
+def rmvSqlFile(sqlfilepath):
+    """
+    Remove sql dump file after compression
+    """
+
+    try:
+        os.remove(sqlfilepath)
+
+    except Exception as err:
+        print(err)
+
+
 def main():
 
     cfg_msg = """
@@ -150,10 +181,12 @@ def main():
 
     API_KEY = confparams["cdb_apikey"]
     cartodb_domain = 'CartoDB:{}'.format(confparams["cdb_domain"])
-    sql_filedump = confparams["sql_filedump"]
+    sql_folderdump = confparams["sql_folderpath"]
+    bk_file = "cartodb_backup_{0}.sql".format(datetime.now().strftime("%Y%m%d_%H%M%S"))
+    sql_filepath = os.path.join(sql_folderdump, bk_file)
 
     if postgis_backup:
-        my_database = "postgres" # my_database must be postgres database
+        my_database = confparams["pg_dbase"]
         my_user = confparams["pg_user"]
         my_host = confparams["pg_host"]
         my_port = confparams["pg_port"]
@@ -162,12 +195,14 @@ def main():
         if not my_password:
             my_password = getPsw(my_user)
 
-        runBackup(API_KEY, cartodb_domain, sql_filedump, pg_backup=True,
+        runBackup(API_KEY, cartodb_domain, sql_filepath, pg_backup=True,
                 my_database=my_database, my_user=my_user, my_password=my_password,
                 my_host=my_host, my_port=my_port, new_database=new_database)
     else:
-        runBackup(API_KEY, cartodb_domain, sql_filedump)
+        runBackup(API_KEY, cartodb_domain, sql_filepath)
 
+    zipSql(sql_folderdump, bk_file)
+    rmvSqlFile(sql_filepath)
 
 if __name__ == '__main__':
     main()
