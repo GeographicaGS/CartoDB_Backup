@@ -43,36 +43,44 @@ def runBackup(API_KEY, cartodb_domain, sql_filedump, pg_backup=False,
     restore SQL dumped file to a new (created) PostGIS DB (pg_backup=True)
 
     """
-    try:
 
-        print("\nStart backup process..")
+    print("\nStart backup process..")
 
-        cdb_dmp = subprocess.Popen(['ogr2ogr', '--config', 'PG_USE_COPY', 'YES',
-                                    '--config', 'CARTODB_API_KEY', API_KEY, '-f',
-                                    'PGDump', sql_filedump, cartodb_domain, '-lco',
-                                    'DROP_TABLE=OFF'], stderr=subprocess.PIPE)
+    ogrprm = ['ogr2ogr', '--config', 'PG_USE_COPY', 'YES', '--config',
+                'CARTODB_API_KEY', API_KEY, '-f', 'PGDump', sql_filedump,
+                cartodb_domain, '-lco', 'DROP_TABLE=OFF']
+    out, err = cmdCall(ogrprm)
+    if err:
+        print("\nCartoDB Dump Error: {0}".format(err))
+    else:
+        print("\nCartoDB Dump: successfully process!")
 
-        out, err = cdb_dmp.communicate()
+    if pg_backup:
+        createPostgisDB(my_database, my_password, my_user, my_host, my_port, new_database)
+
+        pgisprm = ['psql', '-h', my_host, '-p', str(my_port), '-d', new_database,
+                    '-U', my_user, '-a', '-f', sql_filedump]
+        out, err = cmdCall(pgisprm)
         if err:
-            print("\nCartoDB Dump Error:", err)
+            print("\nCartoDB to PostGIS Import Error: {0}".format(err))
         else:
-            print("\nCartoDB Dump: successfully process!")
+            print("\nCartoDB to PostGIS Import: successfully process!")
 
-        if pg_backup:
-            createPostgisDB(my_database, my_password, my_user, my_host, my_port, new_database)
 
-            cdb_pgis = subprocess.Popen(['psql', '-h', my_host, '-p', str(my_port),
-                                        '-d', new_database, '-U', my_user, '-a',
-                                        '-f', sql_filedump], stderr=subprocess.PIPE)
+def cmdCall(params):
+    """
+    Launch shell commands
+    """
+    try:
+        cmd_call = subprocess.Popen(params, stderr=subprocess.PIPE)
+        out, err = cmd_call.communicate()
+        return(out, err)
 
-            out, err = cdb_pgis.communicate()
-            if err:
-                print("\nCartoDB to PostGIS Import Error:", err)
-            else:
-                print("\nCartoDB to PostGIS Import: successfully process!")
+    except ValueError as err:
+        print("\nInvalid arguments: {0}".format(err))
 
     except Exception as err:
-        print("Error:", err)
+        print("\nShell command error: {0}".format(err))
 
 
 def createPostgisDB(my_database, my_password, my_user, my_host, my_port, new_database):
@@ -81,14 +89,14 @@ def createPostgisDB(my_database, my_password, my_user, my_host, my_port, new_dat
 
     """
 
-    print("PostGIS: creating DB...")
+    print("\nPostGIS: creating DB...")
 
     try:
         conn = None
         conn = psycopg2.connect(database=my_database, user=my_user,
         password=my_password, host=my_host, port=my_port)
 
-        # Conection to postgres_database
+        # Conection to create new database
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = conn.cursor()
         # cur.execute("DROP DATABASE {0};".format(new_database))
@@ -108,14 +116,14 @@ def createPostgisDB(my_database, my_password, my_user, my_host, my_port, new_dat
         print("Added PostGIS extension to {0}".format(new_database))
 
     except Exception as err:
-        print(err)
+        print("Database creation error: {0}".format(err))
 
 
 def getPsw(my_user):
     """
     Get password from shell
     """
-    msg = "Enter password for user {}: ".format(my_user)
+    msg = "Enter password for user {0}: ".format(my_user)
     return getpass.getpass(msg)
 
 
@@ -129,10 +137,10 @@ def zipSql(sqlfolder, flname):
         with zipfile.ZipFile(zipflname,'w',zipfile.ZIP_DEFLATED) as zfl:
             zfl.write(os.path.join(sqlfolder, flname), flname)
 
-        print("sql file compressed: {}".format(zipflname))
+        print("sql file compressed: {}\n".format(zipflname))
 
     except Exception as err:
-        print(err)
+        print("\nZip compression error: {0}".format(err))
 
 
 def rmvSqlFile(sqlfilepath):
@@ -144,7 +152,7 @@ def rmvSqlFile(sqlfilepath):
         os.remove(sqlfilepath)
 
     except Exception as err:
-        print(err)
+        print("Error removing sql file: {0}".format(err))
 
 
 def main():
