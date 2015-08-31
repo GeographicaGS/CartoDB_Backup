@@ -1,9 +1,13 @@
 # CartoDB Backup
-Python CLI to make a backup of an entire CartoDB domain to SQL dump file.
-Optionally you can restore SQL dumped file to a new (created) PostGIS DB.
+Python CLI to make a backup of an entire CartoDB domain to SQL dump file (zipped).
+
+Optional:
+- You can restore SQL dumped file to a new (created) PostGIS DB.
+- You can upload sql files to Amazon S3.
 
 Before execute this script you need a cartodbbkconfig.py file properly
 formed (See cartodbbkconfig_example.py) in your current/working directory.
+This file (cartodbbkconfig.py) must be in ".gitignore".
 
 cartodbbkconfig.py config parameters:
 
@@ -17,7 +21,11 @@ confparams = {
                 "pg_dbase": "here your db name",
                 "pg_host": "here your db host",
                 "pg_port": "here your db port",
-                "pg_newdatabase": "here your new db name"
+                "pg_newdatabase": "here your new db name",
+                "aws_acckey": "here your AWS Acces Key",
+                "aws_seckey": "here your AWS Secret Key",
+                "aws_bucket": "here your AWS bucket",
+                "aws_key": "here your AWS bucket key"
             }
 ```
 
@@ -25,11 +33,12 @@ confparams = {
 Python CLI:
 
 ```bash
-$ python cartodb_backup.py [-h] [--postgis_backup POSTGIS_BACKUP]
+$ python cartodb_backup.py [-h] [--postgis_backup] [--aws_s3upload]
 
 optional arguments:
   -h, --help            show this help message and exit
   --postgis_backup      POSTGIS_BACKUP PostGIS backup (restoring dump file created)
+  --aws_s3upload        Upload file to Amazon S3
 
 ```
 Example without PostGIS backup:
@@ -40,6 +49,11 @@ $ python cartodb_backup.py
 Example with PostGIS backup:
 ```bash
 $ python cartodb_backup.py --postgis_backup
+
+```
+Example with Amazon S3 upload:
+```bash
+$ python cartodb_backup.py --aws_s3upload
 
 ```
 
