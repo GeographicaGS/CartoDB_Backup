@@ -58,11 +58,13 @@ $ python cartodb_backup.py --aws_s3upload
 ```
 
 ## Requirements
-- GDAL (>= 1.11).
+- GDAL >= 1.11.
 - PostgreSQL with PostGIS (1).
 - Psycopg2 Python library (1).
+- Python interface to Amazon Web Services (Boto) (2).
 
 (1) Only if you want to use --postgis_backup parameter.
+(2) Only if you want to use --aws_s3upload parameter.
 
 ## About author
 Developed by Cayetano Benavent.
