@@ -31,8 +31,10 @@ import zipfile
 import subprocess
 import getpass
 import psycopg2
-from datetime import datetime
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+from datetime import datetime
+from boto.s3.connection import S3Connection
+from boto.s3.key import Key
 
 
 def runBackup(API_KEY, cartodb_domain, sql_filedump, pg_backup=False,
@@ -81,6 +83,24 @@ def cmdCall(params):
 
     except Exception as err:
         print("\nShell command error: {0}".format(err))
+
+
+def aws_s3storeoutput(filepath, aws_acckey, aws_seckey, aws_bucket, aws_key, validate=False):
+    """
+    Storing outputs in Amazon S3
+    """
+    try:
+        s3conn = S3Connection(aws_acckey, aws_seckey)
+        s3bucket = s3conn.get_bucket(aws_bucket, validate=validate)
+        key = "{0}{1}".format(aws_key, os.path.basename(filepath))
+        k = Key(s3bucket)
+        k.key = key
+        k.set_contents_from_filename(filepath)
+
+        print("\nFile successfully uploaded to Amazon S3...\n")
+
+    except Exception as err:
+        print("\nAWS error: {0}".format(err))
 
 
 def createPostgisDB(my_database, my_password, my_user, my_host, my_port, new_database):
@@ -137,7 +157,9 @@ def zipSql(sqlfolder, flname):
         with zipfile.ZipFile(zipflname,'w',zipfile.ZIP_DEFLATED) as zfl:
             zfl.write(os.path.join(sqlfolder, flname), flname)
 
-        print("sql file compressed: {}\n".format(zipflname))
+        print("\nSQL file compressed: {}".format(zipflname))
+
+        return(zipflname)
 
     except Exception as err:
         print("\nZip compression error: {0}".format(err))
@@ -182,10 +204,13 @@ def main():
 
     arg_parser.add_argument('--postgis_backup', help='PostGIS backup (restoring dump file created)',
                             action="store_true")
+    arg_parser.add_argument('--aws_s3upload', help='Upload file to Amazon S3',
+                            action="store_true")
 
     args = arg_parser.parse_args()
 
     postgis_backup = args.postgis_backup
+    aws_s3upload = args.aws_s3upload
 
     API_KEY = confparams["cdb_apikey"]
     cartodb_domain = 'CartoDB:{}'.format(confparams["cdb_domain"])
@@ -209,8 +234,16 @@ def main():
     else:
         runBackup(API_KEY, cartodb_domain, sql_filepath)
 
-    zipSql(sql_folderdump, bk_file)
+    zpfile = zipSql(sql_folderdump, bk_file)
     rmvSqlFile(sql_filepath)
+
+    if aws_s3upload:
+        aws_acckey = confparams["aws_acckey"]
+        aws_seckey = confparams["aws_seckey"]
+        aws_bucket = confparams["aws_bucket"]
+        aws_key = confparams["aws_key"]
+        aws_s3storeoutput(zpfile, aws_acckey, aws_seckey, aws_bucket, aws_key)
+
 
 if __name__ == '__main__':
     main()
