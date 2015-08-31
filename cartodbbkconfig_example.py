@@ -29,5 +29,9 @@ confparams = {
                 "pg_dbase": "here your db name",
                 "pg_host": "here your db host",
                 "pg_port": "here your db port",
-                "pg_newdatabase": "here your new db name"
+                "pg_newdatabase": "here your new db name",
+                "aws_acckey": "here your AWS Acces Key",
+                "aws_seckey": "here your AWS Secret Key",
+                "aws_bucket": "here your AWS bucket",
+                "aws_key": "here your AWS bucket key"
             }
