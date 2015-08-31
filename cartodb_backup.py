@@ -37,7 +37,7 @@ from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 
 
-def runBackup(API_KEY, cartodb_domain, sql_filedump, pg_backup=False,
+def runBackup(api_key, cartodb_domain, sql_filedump, pg_backup=False,
                 my_database=None, my_user=None, my_password=None,
                 my_host=None, my_port=None, new_database=None):
     """
