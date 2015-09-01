@@ -49,7 +49,7 @@ def runBackup(api_key, cartodb_domain, sql_filedump, pg_backup=False,
     print("\nStart backup process..")
 
     ogrprm = ['ogr2ogr', '--config', 'PG_USE_COPY', 'YES', '--config',
-                'CARTODB_API_KEY', API_KEY, '-f', 'PGDump', sql_filedump,
+                'CARTODB_API_KEY', api_key, '-f', 'PGDump', sql_filedump,
                 cartodb_domain, '-lco', 'DROP_TABLE=OFF']
     out, err = cmdCall(ogrprm)
     if err:
