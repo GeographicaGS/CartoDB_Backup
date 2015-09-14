@@ -217,19 +217,20 @@ def main():
     postgis_backup = args.postgis_backup
     aws_s3upload = args.aws_s3upload
 
-    API_KEY = confparams["cdb_apikey"]
-    cartodb_domain = 'CartoDB:{}'.format(confparams["cdb_domain"])
-    sql_folderdump = confparams["sql_folderpath"]
+    API_KEY = confparams.get("cdb_apikey")
+    cartodb_domain = 'CartoDB:{}'.format(confparams.get("cdb_domain"))
+    sql_folderdump = confparams.get("sql_folderpath")
     dt_now = datetime.now().strftime("%Y%m%d_%H%M%S")
     bk_file = "cartodb_backup_{0}.sql".format(dt_now)
     sql_filepath = os.path.join(sql_folderdump, bk_file)
 
     if postgis_backup:
-        my_database = confparams["pg_dbase"]
-        my_user = confparams["pg_user"]
-        my_host = confparams["pg_host"]
-        my_port = confparams["pg_port"]
-        new_database = "{0}_{1}".format(confparams["pg_newdatabase"], dt_now)
+        my_database = confparams.get("pg_dbase")
+        my_user = confparams.get("pg_user")
+        my_host = confparams.get("pg_host")
+        my_port = confparams.get("pg_port")
+        new_database = "{0}_{1}".format(confparams.get("pg_newdatabase"), dt_now)
+
         my_password = confparams["pg_pswd"]
         if not my_password:
             my_password = getPsw(my_user)
@@ -244,10 +245,10 @@ def main():
     rmvSqlFile(sql_filepath)
 
     if aws_s3upload:
-        aws_acckey = confparams["aws_acckey"]
-        aws_seckey = confparams["aws_seckey"]
-        aws_bucket = confparams["aws_bucket"]
-        aws_key = confparams["aws_key"]
+        aws_acckey = confparams.get("aws_acckey")
+        aws_seckey = confparams.get("aws_seckey")
+        aws_bucket = confparams.get("aws_bucket")
+        aws_key = confparams.get("aws_key")
         aws_s3storeoutput(zpfile, aws_acckey, aws_seckey, aws_bucket, aws_key)
 
 
