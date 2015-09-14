@@ -103,7 +103,8 @@ def aws_s3storeoutput(filepath, aws_acckey, aws_seckey, aws_bucket, aws_key, val
         print("\nAWS error: {0}".format(err))
 
 
-def createPostgisDB(my_database, my_password, my_user, my_host, my_port, new_database):
+def createPostgisDB(my_database, my_password, my_user, my_host, my_port,
+                    new_database, del_db=True):
     """
     Create new PostGIS database to store sql dumped file previously
 
@@ -119,7 +120,11 @@ def createPostgisDB(my_database, my_password, my_user, my_host, my_port, new_dat
         # Conection to create new database
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = conn.cursor()
-        # cur.execute("DROP DATABASE {0};".format(new_database))
+
+        if del_db:
+            cur.execute("DROP DATABASE IF EXISTS {0};".format(new_database))
+            print("Database {0} removed".format(new_database))
+
         cur.execute("CREATE DATABASE {0};".format(new_database))
         cur.close()
         conn.close()
@@ -215,7 +220,8 @@ def main():
     API_KEY = confparams["cdb_apikey"]
     cartodb_domain = 'CartoDB:{}'.format(confparams["cdb_domain"])
     sql_folderdump = confparams["sql_folderpath"]
-    bk_file = "cartodb_backup_{0}.sql".format(datetime.now().strftime("%Y%m%d_%H%M%S"))
+    dt_now = datetime.now().strftime("%Y%m%d_%H%M%S")
+    bk_file = "cartodb_backup_{0}.sql".format(dt_now)
     sql_filepath = os.path.join(sql_folderdump, bk_file)
 
     if postgis_backup:
@@ -223,7 +229,7 @@ def main():
         my_user = confparams["pg_user"]
         my_host = confparams["pg_host"]
         my_port = confparams["pg_port"]
-        new_database = confparams["pg_newdatabase"]
+        new_database = "{0}_{1}".format(confparams["pg_newdatabase"], dt_now)
         my_password = confparams["pg_pswd"]
         if not my_password:
             my_password = getPsw(my_user)
