@@ -14,7 +14,7 @@ cartodbbkconfig.py config parameters:
 ```python
 confparams = {
                 "cdb_apikey": "here your api key",
-                "cdb_domain": "here your domain"
+                "cdb_domain": "here your domain",
                 "sql_folderpath": "here your dump folderpath",
                 "pg_user": "here your db admin user",
                 "pg_pswd": None, # If you leave the password to None, the program will ask you in the command line interface
