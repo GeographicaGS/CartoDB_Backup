@@ -25,7 +25,9 @@ confparams = {
                 "aws_acckey": "here your AWS Acces Key",
                 "aws_seckey": "here your AWS Secret Key",
                 "aws_bucket": "here your AWS bucket",
-                "aws_key": "here your AWS bucket key"
+                "aws_key": "here your AWS bucket key",
+                "sns_regname": "here your AWS region name",
+                "sns_arn": "here your SNS ARN"
             }
 ```
 
@@ -33,12 +35,13 @@ confparams = {
 Python CLI:
 
 ```bash
-$ python cartodb_backup.py [-h] [--postgis_backup] [--aws_s3upload]
+$ python cartodb_backup.py [-h] [--postgis_backup] [--aws_s3upload] [--amz_sns]
 
 optional arguments:
   -h, --help            show this help message and exit
   --postgis_backup      POSTGIS_BACKUP PostGIS backup (restoring dump file created)
   --aws_s3upload        Upload file to Amazon S3
+  --amz_sns             Amazon SNS message
 
 ```
 Example without PostGIS backup:
@@ -54,6 +57,11 @@ $ python cartodb_backup.py --postgis_backup
 Example with Amazon S3 upload:
 ```bash
 $ python cartodb_backup.py --aws_s3upload
+
+```
+Example with Amazon S3 upload and Amazon SNS:
+```bash
+$ python cartodb_backup.py --aws_s3upload --amz_sns
 
 ```
 
