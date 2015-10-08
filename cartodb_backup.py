@@ -87,7 +87,7 @@ def cmdCall(params):
         logger.error("Shell command error: {0}".format(err))
 
 
-def aws_s3storeoutput(filepath, aws_acckey, aws_seckey, aws_bucket, aws_key, validate=False):
+def awsS3StoreOutput(filepath, aws_acckey, aws_seckey, aws_bucket, aws_key, validate=False):
     """
     Storing outputs in Amazon S3
     """
@@ -207,7 +207,7 @@ def rmvSqlFile(sqlfilepath):
 
 
 def main():
-    
+
     cfg_msg = """
     -----------------------------------------
         Before execute this script you need a
@@ -277,7 +277,7 @@ def main():
         aws_seckey = confparams.get("aws_seckey")
         aws_bucket = confparams.get("aws_bucket")
         aws_key = confparams.get("aws_key")
-        aws_s3storeoutput(zpfile, aws_acckey, aws_seckey, aws_bucket, aws_key)
+        awsS3StoreOutput(zpfile, aws_acckey, aws_seckey, aws_bucket, aws_key)
 
         if amz_sns:
             sns_arn = confparams.get("sns_arn")
