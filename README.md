@@ -25,7 +25,7 @@ confparams = {
                 "aws_acckey": "here your AWS Acces Key",
                 "aws_seckey": "here your AWS Secret Key",
                 "aws_bucket": "here your AWS bucket",
-                "aws_key": "here your AWS bucket key",
+                "aws_prekey": "here your AWS bucket key",
                 "sns_regname": "here your AWS region name",
                 "sns_arn": "here your SNS ARN"
             }
