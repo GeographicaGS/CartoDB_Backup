@@ -87,14 +87,14 @@ def cmdCall(params):
         logger.error("Shell command error: {0}".format(err))
 
 
-def awsS3StoreOutput(filepath, aws_acckey, aws_seckey, aws_bucket, aws_key, validate=False):
+def awsS3StoreOutput(filepath, aws_acckey, aws_seckey, aws_bucket, aws_prekey, validate=False):
     """
     Storing outputs in Amazon S3
     """
     try:
         s3conn = S3Connection(aws_acckey, aws_seckey)
         s3bucket = s3conn.get_bucket(aws_bucket, validate=validate)
-        key = "{0}{1}".format(aws_key, os.path.basename(filepath))
+        key = "{0}{1}".format(aws_prekey, os.path.basename(filepath))
         k = Key(s3bucket)
         k.key = key
         k.set_contents_from_filename(filepath)
@@ -276,8 +276,8 @@ def main():
         aws_acckey = confparams.get("aws_acckey")
         aws_seckey = confparams.get("aws_seckey")
         aws_bucket = confparams.get("aws_bucket")
-        aws_key = confparams.get("aws_key")
-        awsS3StoreOutput(zpfile, aws_acckey, aws_seckey, aws_bucket, aws_key)
+        aws_prekey = confparams.get("aws_prekey")
+        awsS3StoreOutput(zpfile, aws_acckey, aws_seckey, aws_bucket, aws_prekey)
 
         if amz_sns:
             sns_arn = confparams.get("sns_arn")
