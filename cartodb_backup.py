@@ -105,7 +105,7 @@ def awsS3StoreOutput(filepath, aws_acckey, aws_seckey, aws_bucket, aws_prekey, v
         logger.error("AWS S3 error: {0}".format(err))
 
 
-def awsPushSNS(aws_acckey, aws_seckey, sns_arn, sns_regname, message):
+def awsPushSNS(aws_acckey, aws_seckey, sns_arn, sns_regname, message, sbj=None):
     """
     Amazon SNS (Simple Notification Service) reporting
     """
@@ -116,7 +116,12 @@ def awsPushSNS(aws_acckey, aws_seckey, sns_arn, sns_regname, message):
                     aws_secret_access_key=aws_seckey,
                     validate_certs=False)
 
-            sns.publish(sns_arn, message, subject="Finished AWS S3 backup!")
+            if sbj:
+                subject = "{0} - Finished AWS S3 backup!".format(sbj)
+            else:
+                subject = "Finished AWS S3 backup!"
+
+            sns.publish(sns_arn, message, subject=subject)
             logger.info("Message successfully sent with AWS SNS...")
 
         else:
@@ -282,9 +287,10 @@ def main():
         if amz_sns:
             sns_arn = confparams.get("sns_arn")
             sns_regname = confparams.get("sns_regname")
+            sns_subject = confparams.get("sns_subject")
             lg = ["[{0} {1}] - {2}".format(i.asctime, i.levelname, i.message) for i in mh.buffer]
             message = "\n".join(lg)
-            awsPushSNS(aws_acckey, aws_seckey, sns_arn, sns_regname, message)
+            awsPushSNS(aws_acckey, aws_seckey, sns_arn, sns_regname, message, sbj=sns_subject)
 
 
 if __name__ == '__main__':
