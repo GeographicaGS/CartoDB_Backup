@@ -77,30 +77,37 @@ class CartoDBBackup(object):
         restore SQL dumped file to a new (created) PostGIS DB (pg_backup=True)
 
         """
+        try:
+            self.__logger.info("Start backup process...")
 
-        self.__logger.info("Start backup process...")
+            ogrprm = ['ogr2ogr', '--config', 'PG_USE_COPY', 'YES', '--config',
+                        'CARTODB_API_KEY', self.__api_key, '-f', 'PGDump',
+                        sql_filedump, self.__cartodb_domain, '-lco', 'DROP_TABLE=OFF']
 
-        ogrprm = ['ogr2ogr', '--config', 'PG_USE_COPY', 'YES', '--config',
-                    'CARTODB_API_KEY', self.__api_key, '-f', 'PGDump',
-                    sql_filedump, self.__cartodb_domain, '-lco', 'DROP_TABLE=OFF']
+            out, err = self.__cmdCall(ogrprm)
 
-        out, err = self.__cmdCall(ogrprm)
+            if err:
+                self.__logger.error("CartoDB Dump Error: {0}".format(err))
+            else:
+                self.__logger.info("CartoDB Dump: successfully process!")
 
-        if err:
-            self.__logger.error("CartoDB Dump Error: {0}".format(err))
-        else:
-            self.__logger.info("CartoDB Dump: successfully process!")
+        except Exception as err:
+            self.__logger.error("Check your GDAL installation: {0}".format(err))
 
         if pg_backup:
             self.__createPostgisDB(my_database, my_password, my_user, my_host, my_port, new_database)
 
-            pgisprm = ['psql', '-h', my_host, '-p', str(my_port), '-d', new_database,
-                        '-U', my_user, '-a', '-f', sql_filedump]
-            out, err = self.__cmdCall(pgisprm)
-            if err:
-                self.__logger.error("CartoDB to PostGIS Import Error: {0}".format(err))
-            else:
-                self.__logger.info("CartoDB to PostGIS Import: successfully process!")
+            try:
+                pgisprm = ['psql', '-h', my_host, '-p', str(my_port), '-d', new_database,
+                            '-U', my_user, '-a', '-f', sql_filedump]
+                out, err = self.__cmdCall(pgisprm)
+                if err:
+                    self.__logger.error("CartoDB to PostGIS Import Error: {0}".format(err))
+                else:
+                    self.__logger.info("CartoDB to PostGIS Import: successfully process!")
+
+            except Exception as err:
+                self.__logger.error("Check your postgresql-client installation: {0}".format(err))
 
 
     def __cmdCall(self, params):
