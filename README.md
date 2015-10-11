@@ -9,7 +9,6 @@ Optional:
 
 Before execute this script you need a cartodbbkconfig.py file properly
 formed (See cartodbbkconfig_example.py).
-This file (cartodbbkconfig.py) must be in ".gitignore".
 
 cartodbbkconfig.py config parameters:
 
@@ -38,10 +37,10 @@ confparams = {
 Python CLI:
 
 ```bash
-$ python cartodb_backup.py [-h] configfile [--postgis_backup] [--aws_s3upload] [--amz_sns]
+$ cartodb_backup [-h] configfile [--postgis_backup] [--aws_s3upload] [--amz_sns]
 
 positional arguments:
-  configfile            Config filepath: /location/cartodbbkconfig.py
+  configfile            Config filepath: /folderlocation/
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -52,22 +51,22 @@ optional arguments:
 ```
 Example without PostGIS backup:
 ```bash
-$ python cartodb_backup.py
+$ cartodb_backup /folderlocation/
 
 ```
 Example with PostGIS backup:
 ```bash
-$ python cartodb_backup.py --postgis_backup
+$ cartodb_backup /folderlocation/ --postgis_backup
 
 ```
 Example with Amazon S3 upload:
 ```bash
-$ python cartodb_backup.py --aws_s3upload
+$ cartodb_backup /folderlocation/ --aws_s3upload
 
 ```
 Example with Amazon S3 upload and Amazon SNS:
 ```bash
-$ python cartodb_backup.py --aws_s3upload --amz_sns
+$ cartodb_backup /folderlocation/ --aws_s3upload --amz_sns
 
 ```
 

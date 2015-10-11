@@ -19,10 +19,6 @@
 #  MA 02110-1301, USA.
 #
 
-##########################################################################
-# Before execute this script you need a cartodbbkconfig.py file properly #
-# formed (See cartodbbkconfig_example).                                  #
-##########################################################################
 
 
 import os
