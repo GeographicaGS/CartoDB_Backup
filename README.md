@@ -2,11 +2,13 @@
 Python CLI to make a backup of an entire CartoDB domain to SQL dump file (zipped).
 
 Optional:
+
 - You can restore SQL dumped file to a new (created) PostGIS DB.
 - You can upload sql files to Amazon S3.
+- Message from Amazon SNS (Simple Notification Service).
 
 Before execute this script you need a cartodbbkconfig.py file properly
-formed (See cartodbbkconfig_example.py) in your current/working directory.
+formed (See cartodbbkconfig_example.py).
 This file (cartodbbkconfig.py) must be in ".gitignore".
 
 cartodbbkconfig.py config parameters:
@@ -25,9 +27,10 @@ confparams = {
                 "aws_acckey": "here your AWS Acces Key",
                 "aws_seckey": "here your AWS Secret Key",
                 "aws_bucket": "here your AWS bucket",
-                "aws_key": "here your AWS bucket key",
+                "aws_prekey": "here your AWS bucket prefix key",
                 "sns_regname": "here your AWS region name",
-                "sns_arn": "here your SNS ARN"
+                "sns_arn": "here your SNS ARN",
+                "sns_subject": "My project"
             }
 ```
 
@@ -35,7 +38,10 @@ confparams = {
 Python CLI:
 
 ```bash
-$ python cartodb_backup.py [-h] [--postgis_backup] [--aws_s3upload] [--amz_sns]
+$ python cartodb_backup.py [-h] configfile [--postgis_backup] [--aws_s3upload] [--amz_sns]
+
+positional arguments:
+  configfile            Config filepath: /location/cartodbbkconfig.py
 
 optional arguments:
   -h, --help            show this help message and exit
