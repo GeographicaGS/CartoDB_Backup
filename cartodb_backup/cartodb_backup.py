@@ -92,7 +92,7 @@ class CartoDBBackup(object):
                 self.__logger.info("CartoDB Dump: successfully process!")
 
         except Exception as err:
-            self.__logger.error("Check your GDAL installation: {0}".format(err))
+            self.__logger.error("Check your GDAL >=1.11 installation: {0}".format(err))
 
         if pg_backup:
             self.__createPostgisDB(my_database, my_password, my_user, my_host, my_port, new_database)
