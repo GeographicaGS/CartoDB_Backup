@@ -32,6 +32,11 @@ confparams = {
                 "sns_subject": "My project"
             }
 ```
+## Installation
+- This is a Python CLI. This CLI must be installed in this way (It will soon be in PyPI):
+```bash
+$ python setup.py install
+```
 
 ## Usage
 Python CLI:
