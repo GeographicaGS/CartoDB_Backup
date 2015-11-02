@@ -42,7 +42,8 @@ $ python setup.py install
 Python CLI:
 
 ```bash
-$ cartodb_backup [-h] configfile [--postgis_backup] [--aws_s3upload] [--amz_sns]
+$ cartodb_backup [-h] configfile [--postgis_backup] [--aws_s3upload]
+                 [--amz_sns] [--rmv_localfl]
 
 positional arguments:
   configfile            Config filepath: /folderlocation/
@@ -52,6 +53,7 @@ optional arguments:
   --postgis_backup      POSTGIS_BACKUP PostGIS backup (restoring dump file created)
   --aws_s3upload        Upload file to Amazon S3
   --amz_sns             Amazon SNS message
+  --rmv_localfl         Remove local file after a successfully Amazon S3 upload
 
 ```
 Example without PostGIS backup:
@@ -69,9 +71,9 @@ Example with Amazon S3 upload:
 $ cartodb_backup /folderlocation/ --aws_s3upload
 
 ```
-Example with Amazon S3 upload and Amazon SNS:
+Example with Amazon S3 upload and Amazon SNS (removing local sql folder after upload):
 ```bash
-$ cartodb_backup /folderlocation/ --aws_s3upload --amz_sns
+$ cartodb_backup /folderlocation/ --aws_s3upload --amz_sns --rmv_localfl
 
 ```
 
