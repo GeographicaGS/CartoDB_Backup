@@ -123,7 +123,7 @@ class CartoDBBackup(object):
 
 
     def awsS3StoreOutput(self, filepath, aws_acckey, aws_seckey, aws_bucket,
-                            aws_prekey, validate=False):
+                            aws_prekey, validate=False, rmvfl=False):
         """
         Storing outputs in Amazon S3
 
@@ -137,6 +137,10 @@ class CartoDBBackup(object):
             k.set_contents_from_filename(filepath)
 
             self.__logger.info("File successfully uploaded to Amazon S3...")
+
+            if rmvfl:
+                self.rmvSqlFile(filepath, lg=True)
+
 
         except Exception as err:
             self.__logger.error("AWS S3 error: {0}".format(err))
@@ -239,13 +243,17 @@ class CartoDBBackup(object):
             self.__logger.error("Zip compression error: {0}".format(err))
 
 
-    def rmvSqlFile(self, sqlfilepath):
+    def rmvSqlFile(self, filepath, lg=False):
         """
         Remove sql dump file after compression
+        and after a successfully amazon S3 upload
         """
 
         try:
-            os.remove(sqlfilepath)
+            os.remove(filepath)
+
+            if lg:
+                self.__logger.info("SQL file successfully removed from local folder...")
 
         except Exception as err:
             self.__logger.error("Error removing sql file: {0}".format(err))
