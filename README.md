@@ -9,7 +9,6 @@ Optional:
 
 Before execute this script you need a cartodbbkconfig.py file properly
 formed (See cartodbbkconfig_example.py).
-This file (cartodbbkconfig.py) must be in ".gitignore".
 
 cartodbbkconfig.py config parameters:
 
@@ -33,41 +32,48 @@ confparams = {
                 "sns_subject": "My project"
             }
 ```
+## Installation
+- This is a Python CLI. This CLI must be installed in this way (It will soon be in PyPI):
+```bash
+$ python setup.py install
+```
 
 ## Usage
 Python CLI:
 
 ```bash
-$ python cartodb_backup.py [-h] configfile [--postgis_backup] [--aws_s3upload] [--amz_sns]
+$ cartodb_backup [-h] configfile [--postgis_backup] [--aws_s3upload]
+                 [--amz_sns] [--rmv_localfl]
 
 positional arguments:
-  configfile            Config filepath: /location/cartodbbkconfig.py
+  configfile            Config filepath: /folderlocation/
 
 optional arguments:
   -h, --help            show this help message and exit
   --postgis_backup      POSTGIS_BACKUP PostGIS backup (restoring dump file created)
   --aws_s3upload        Upload file to Amazon S3
   --amz_sns             Amazon SNS message
+  --rmv_localfl         Remove local file after a successfully Amazon S3 upload
 
 ```
 Example without PostGIS backup:
 ```bash
-$ python cartodb_backup.py
+$ cartodb_backup /folderlocation/
 
 ```
 Example with PostGIS backup:
 ```bash
-$ python cartodb_backup.py --postgis_backup
+$ cartodb_backup /folderlocation/ --postgis_backup
 
 ```
 Example with Amazon S3 upload:
 ```bash
-$ python cartodb_backup.py --aws_s3upload
+$ cartodb_backup /folderlocation/ --aws_s3upload
 
 ```
-Example with Amazon S3 upload and Amazon SNS:
+Example with Amazon S3 upload and Amazon SNS (removing local sql folder after upload):
 ```bash
-$ python cartodb_backup.py --aws_s3upload --amz_sns
+$ cartodb_backup /folderlocation/ --aws_s3upload --amz_sns --rmv_localfl
 
 ```
 

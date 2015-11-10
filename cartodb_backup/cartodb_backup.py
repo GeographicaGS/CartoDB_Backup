@@ -19,10 +19,6 @@
 #  MA 02110-1301, USA.
 #
 
-##########################################################################
-# Before execute this script you need a cartodbbkconfig.py file properly #
-# formed (See cartodbbkconfig_example).                                  #
-##########################################################################
 
 
 import os
@@ -77,30 +73,37 @@ class CartoDBBackup(object):
         restore SQL dumped file to a new (created) PostGIS DB (pg_backup=True)
 
         """
+        try:
+            self.__logger.info("Start backup process...")
 
-        self.__logger.info("Start backup process...")
+            ogrprm = ['ogr2ogr', '--config', 'PG_USE_COPY', 'YES', '--config',
+                        'CARTODB_API_KEY', self.__api_key, '-f', 'PGDump',
+                        sql_filedump, self.__cartodb_domain, '-lco', 'DROP_TABLE=OFF']
 
-        ogrprm = ['ogr2ogr', '--config', 'PG_USE_COPY', 'YES', '--config',
-                    'CARTODB_API_KEY', self.__api_key, '-f', 'PGDump',
-                    sql_filedump, self.__cartodb_domain, '-lco', 'DROP_TABLE=OFF']
+            out, err = self.__cmdCall(ogrprm)
 
-        out, err = self.__cmdCall(ogrprm)
+            if err:
+                self.__logger.error("CartoDB Dump Error: {0}".format(err))
+            else:
+                self.__logger.info("CartoDB Dump: successfully process!")
 
-        if err:
-            self.__logger.error("CartoDB Dump Error: {0}".format(err))
-        else:
-            self.__logger.info("CartoDB Dump: successfully process!")
+        except Exception as err:
+            self.__logger.error("Check your GDAL >=1.11 installation: {0}".format(err))
 
         if pg_backup:
             self.__createPostgisDB(my_database, my_password, my_user, my_host, my_port, new_database)
 
-            pgisprm = ['psql', '-h', my_host, '-p', str(my_port), '-d', new_database,
-                        '-U', my_user, '-a', '-f', sql_filedump]
-            out, err = self.__cmdCall(pgisprm)
-            if err:
-                self.__logger.error("CartoDB to PostGIS Import Error: {0}".format(err))
-            else:
-                self.__logger.info("CartoDB to PostGIS Import: successfully process!")
+            try:
+                pgisprm = ['psql', '-h', my_host, '-p', str(my_port), '-d', new_database,
+                            '-U', my_user, '-a', '-f', sql_filedump]
+                out, err = self.__cmdCall(pgisprm)
+                if err:
+                    self.__logger.error("CartoDB to PostGIS Import Error: {0}".format(err))
+                else:
+                    self.__logger.info("CartoDB to PostGIS Import: successfully process!")
+
+            except Exception as err:
+                self.__logger.error("Check your postgresql-client installation: {0}".format(err))
 
 
     def __cmdCall(self, params):
@@ -120,7 +123,7 @@ class CartoDBBackup(object):
 
 
     def awsS3StoreOutput(self, filepath, aws_acckey, aws_seckey, aws_bucket,
-                            aws_prekey, validate=False):
+                            aws_prekey, validate=False, rmvfl=False):
         """
         Storing outputs in Amazon S3
 
@@ -134,6 +137,10 @@ class CartoDBBackup(object):
             k.set_contents_from_filename(filepath)
 
             self.__logger.info("File successfully uploaded to Amazon S3...")
+
+            if rmvfl:
+                self.rmvSqlFile(filepath, lg=True)
+
 
         except Exception as err:
             self.__logger.error("AWS S3 error: {0}".format(err))
@@ -236,13 +243,17 @@ class CartoDBBackup(object):
             self.__logger.error("Zip compression error: {0}".format(err))
 
 
-    def rmvSqlFile(self, sqlfilepath):
+    def rmvSqlFile(self, filepath, lg=False):
         """
         Remove sql dump file after compression
+        and after a successfully amazon S3 upload
         """
 
         try:
-            os.remove(sqlfilepath)
+            os.remove(filepath)
+
+            if lg:
+                self.__logger.info("SQL file successfully removed from local folder...")
 
         except Exception as err:
             self.__logger.error("Error removing sql file: {0}".format(err))

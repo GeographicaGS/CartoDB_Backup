@@ -48,7 +48,7 @@ def run():
 
     arg_parser = argparse.ArgumentParser(description=descr)
 
-    arg_parser.add_argument('configfile', type=str, help='Config filepath: /location/cartodbbkconfig.py')
+    arg_parser.add_argument('configfile', type=str, help='Config filepath: /locationfolder/')
 
     arg_parser.add_argument('--postgis_backup', help='PostGIS backup (restoring dump file created)',
                             action="store_true")
@@ -59,12 +59,16 @@ def run():
     arg_parser.add_argument('--amz_sns', help='Amazon SNS message',
                             action="store_true")
 
+    arg_parser.add_argument('--rmv_localfl', help='Remove local file after a successfully Amazon S3 upload',
+                            action="store_true")
+
     args = arg_parser.parse_args()
 
     configfile = args.configfile
     postgis_backup = args.postgis_backup
     aws_s3upload = args.aws_s3upload
     amz_sns = args.amz_sns
+    rmv_localfl = args.rmv_localfl
 
     try:
         sys.path.append(configfile)
@@ -115,7 +119,12 @@ def run():
         aws_bucket = confparams.get("aws_bucket")
         aws_prekey = confparams.get("aws_prekey")
 
-        cdb_bk.awsS3StoreOutput(zpfile, aws_acckey, aws_seckey, aws_bucket, aws_prekey)
+        rmvfl = False
+        if rmv_localfl:
+            rmvfl = True
+
+        cdb_bk.awsS3StoreOutput(zpfile, aws_acckey, aws_seckey, aws_bucket,
+                                    aws_prekey, rmvfl=rmvfl)
 
         if amz_sns:
             sns_arn = confparams.get("sns_arn")
