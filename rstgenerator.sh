@@ -24,4 +24,13 @@
 #  MA 02110-1301, USA.
 #
 
-pandoc --from=markdown --to=rst --output=README.rst README.md
+OUTRDM=README.rst
+INRDM=README.md
+
+if [ -f "$INRDM" ]; then
+    pandoc --from=markdown --to=rst --output=$OUTRDM $INRDM;
+
+else
+    printf '%s\n' "Error: ($INRDM) file does not exist."
+
+fi
