@@ -30,7 +30,9 @@ INRDM=README.md
 if [ -f "$INRDM" ]; then
     pandoc --from=markdown --to=rst --output=$OUTRDM $INRDM;
 
+    printf '%s\n' "Successfully process: $OUTRDM file generated."
+
 else
-    printf '%s\n' "Error: ($INRDM) file does not exist."
+    printf '%s\n' "Process can not run: $INRDM file does not exist."
 
 fi
