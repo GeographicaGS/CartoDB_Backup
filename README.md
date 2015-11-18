@@ -1,4 +1,7 @@
 # CartoDB Backup
+
+[![PyPI version](https://badge.fury.io/py/cartodb_backup.svg)](https://badge.fury.io/py/cartodb_backup)
+
 Python CLI to make a backup of an entire CartoDB domain to SQL dump file (zipped).
 
 Optional:

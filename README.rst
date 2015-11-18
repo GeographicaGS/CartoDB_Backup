@@ -1,6 +1,8 @@
 CartoDB Backup
 ==============
 
+|PyPI version|
+
 Python CLI to make a backup of an entire CartoDB domain to SQL dump file
 (zipped).
 
@@ -116,3 +118,6 @@ This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
 Free Software Foundation; either version 2 of the License, or (at your
 option) any later version.
+
+.. |PyPI version| image:: https://badge.fury.io/py/cartodb_backup.svg
+   :target: https://badge.fury.io/py/cartodb_backup
