@@ -36,7 +36,14 @@ confparams = {
             }
 ```
 ## Installation
-- This is a Python CLI. This CLI must be installed in this way (It will soon be in PyPI):
+You can install this package from PYPI:
+https://pypi.python.org/pypi/cartodb_backup
+
+```bash
+$ pip install cartodb_backup
+```
+
+You can also install it in this way:
 ```bash
 $ python setup.py install
 ```
