@@ -19,7 +19,7 @@ with open('README.rst', 'r') as f:
 
 setup(
     name='cartodb_backup',
-    version='0.1',
+    version='0.1.1',
 
     description='Python CLI to make a backup of an entire CartoDB domain to SQL dump file (zipped). Optionally you can restore SQL dumped file to a new (created) PostGIS DB. Also you can upload sql files to Amazon S3.',
     long_description=long_description,
@@ -38,7 +38,7 @@ setup(
 
     # According to: https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
         'Programming Language :: Python :: 2.7',
