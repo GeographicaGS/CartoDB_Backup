@@ -30,7 +30,7 @@ setup(
     scripts=['bin/cartodb_backup'],
 
     # The project's main homepage.
-    url='http://github.com/GeographicaGS/CartoDB_Backup',
+    url='https://github.com/GeographicaGS/CartoDB_Backup',
 
     # Licensed under the GPLv2 license:
     # https://www.gnu.org/licenses/gpl-2.0.txt
@@ -46,14 +46,13 @@ setup(
         'Topic :: Scientific/Engineering :: GIS'
     ],
 
-    keywords='cartodb GIS postgis',
-
     packages=find_packages(),
     include_package_data=False,
     install_requires=[
-        'psycopg2>=2.4.5,<3.0',
         'boto>=2.38.0,<3.0',
+        'psycopg2>=2.4.5,<3.0'
+    ],
 
-    ]
+    keywords='cartodb GIS postgis',
 
 )
